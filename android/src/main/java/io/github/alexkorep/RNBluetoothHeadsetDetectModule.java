@@ -24,12 +24,12 @@ public class RNBluetoothHeadsetDetectModule extends ReactContextBaseJavaModule i
 
     BroadcastReceiver receiver;
 
-    private void onChange(final String deviceName) {
+    private void onChange(final String deviceAddress) {
         // Report device name (if not empty) to the host
         WritableMap payload = Arguments.createMap();
         WritableArray deviceList = Arguments.createArray();
-        if (!deviceName.isEmpty()) {
-            deviceList.pushString(deviceName);
+        if (!deviceAddress.isEmpty()) {
+            deviceList.pushString(deviceAddress);
         }
         payload.putArray("devices", deviceList);
         this.getReactApplicationContext()
@@ -88,15 +88,19 @@ public class RNBluetoothHeadsetDetectModule extends ReactContextBaseJavaModule i
             return;
         }
         final AudioManager audioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
-        AudioDeviceInfo[] devices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-        for (AudioDeviceInfo device : devices) {
-            final int type = device.getType();
-            if (type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
-                // Device is found
-                final String deviceName = device.getProductName().toString();
-                onChange(deviceName);
-                return;
+        try {
+            AudioDeviceInfo[] devices = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+            for (AudioDeviceInfo device : devices) {
+                final int type = device.getType();
+                if (type == AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
+                    // Device is found
+                    final String deviceAddress = device.getAddress();
+                    onChange(deviceAddress);
+                    return;
+                }
             }
+        } catch(NoSuchMethodError e) {
+            //ignore in case of error
         }
         // No devices found
         onChange("");
