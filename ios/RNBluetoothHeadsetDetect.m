@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE()
         if ([[desc portType] isEqualToString:AVAudioSessionPortBluetoothHFP] ||
             [[desc portType] isEqualToString:AVAudioSessionPortBluetoothA2DP] ||
             [[desc portType] isEqualToString:AVAudioSessionPortBluetoothLE]) {
-            [devices addObject:[desc portName]];
+            [devices addObject:[desc uid]];
         }
     }
     [self sendEventWithName:@"onChange" body:@{@"devices": devices}];

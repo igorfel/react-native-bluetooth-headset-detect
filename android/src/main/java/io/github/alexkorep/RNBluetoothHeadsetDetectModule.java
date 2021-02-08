@@ -54,7 +54,7 @@ public class RNBluetoothHeadsetDetectModule extends ReactContextBaseJavaModule i
                     final int state = intent.getIntExtra(BluetoothProfile.EXTRA_STATE, BluetoothProfile.STATE_DISCONNECTED);
                     if (state == BluetoothProfile.STATE_CONNECTED) {
                         // Device has connected, report it
-                        onChange(device.getName());
+                        onChange(device.getAddress());
                     } else if (state == BluetoothProfile.STATE_DISCONNECTED) {
                         // Device has disconnected, report it
                         onChange("");
